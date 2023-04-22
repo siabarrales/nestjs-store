@@ -14,20 +14,4 @@ export class AppController {
   newEndpoint() {
     return 'This is a new endpoint!';
   }
-
-  //Para que las dos rutas no choquen, siempre deben ir primero las que no son dinamicas
-  @Get('products/filter')
-  getProductFilter() {
-    return `ProductFilter`;
-  }
-
-  @Get('products/:id')
-  getProduct(@Param('id') id: string) {
-    return `Product ${id}`;
-  }
-
-  @Get('products')
-  getProducts(@Query('limit') limit = 100, @Query('offset') offset = 0) {
-    return `Products: limit => ${limit}, offset => ${offset}`;
-  }
 }
