@@ -9,17 +9,18 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  ParseIntPipe,
 } from '@nestjs/common';
+
+import { ProductsService } from '../services/products.service';
 
 @Controller('products')
 export class ProductsController {
+  constructor(private productsService: ProductsService) {}
+
   @Get()
   getProducts(@Query('limit') limit = 100, @Query('offset') offset = 0) {
-    return {
-      message: 'Products List',
-      limit,
-      offset,
-    };
+    return this.productsService.findAll();
   }
   //Para que las dos rutas no choquen, siempre deben ir primero las que no son dinamicas
   @Get('filter')
@@ -32,30 +33,31 @@ export class ProductsController {
   //Enviar un HttpCode en particular. En este caso, el 202
   @Get(':id')
   @HttpCode(HttpStatus.ACCEPTED)
-  getProduct(@Param('id') id: string) {
-    return {
-      message: `Product ${id}`,
-    };
+  getProduct(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.findOne(+id);
   }
 
   @Post()
   create(@Body() payload: any) {
+    const newProd = this.productsService.create(payload);
     return {
-      message: 'Action to create a product',
-      payload,
+      message: 'Product created',
+      newProd,
     };
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() payload: any) {
+    const updatedProd = this.productsService.update(+id, payload);
     return {
-      message: `Action to update a product ${id}`,
-      payload,
+      message: `Product updated`,
+      updatedProd,
     };
   }
 
   @Delete(':id')
   delete(@Param('id') id: string) {
+    this.productsService.delete(+id);
     return {
       message: `Action to delete a product ${id}`,
     };
