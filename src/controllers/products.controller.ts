@@ -9,11 +9,11 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
-  ParseIntPipe,
 } from '@nestjs/common';
 
 import { ProductsService } from '../services/products.service';
-
+import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
+import { ParseIntPipe } from '../common/parse-int/parse-int.pipe';
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
@@ -38,7 +38,7 @@ export class ProductsController {
   }
 
   @Post()
-  create(@Body() payload: any) {
+  create(@Body() payload: CreateProductDto) {
     const newProd = this.productsService.create(payload);
     return {
       message: 'Product created',
@@ -47,7 +47,7 @@ export class ProductsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() payload: any) {
+  update(@Param('id') id: string, @Body() payload: UpdateProductDto) {
     const updatedProd = this.productsService.update(+id, payload);
     return {
       message: `Product updated`,
